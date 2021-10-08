@@ -632,6 +632,7 @@ LOCAL_DEFS
 LOCAL_LDFLAGS
 LOCAL_CFLAGS
 LOCAL_LIBS
+DYNAMICLOAD_LIB
 MALLOC_DEBUG
 DEBUG
 RELSTATUS
@@ -858,6 +859,7 @@ enable_single_help_strings
 enable_strict_posix_default
 enable_usg_echo_default
 enable_xpg_echo_default
+enable_bash_shell_execve_plugin
 enable_mem_scramble
 enable_profiling
 enable_static_link
@@ -1568,6 +1570,7 @@ Optional Features:
   --enable-xpg-echo-default
                           make the echo builtin expand escape sequences by
                           default
+  --enable-bash-plugin    enable bash plugin features
   --enable-mem-scramble   scramble memory on calls to malloc and free
   --enable-profiling      allow profiling with gprof
   --enable-static-link    link bash statically, for use as a root shell
@@ -3027,6 +3030,7 @@ opt_dircomplete_expand_default=no
 opt_globascii_default=yes
 opt_function_import=yes
 opt_dev_fd_stat_broken=no
+opt_bash_shell_execve_plugin=yes
 
 opt_static_link=no
 opt_profiling=no
@@ -3048,6 +3052,7 @@ if test $opt_minimal_config = yes; then
 	opt_multibyte=yes opt_cond_regexp=no opt_coproc=no
 	opt_casemod_attrs=no opt_casemod_expansions=no opt_extglob_default=no
 	opt_globascii_default=yes
+	opt_bash_shell_execve_plugin=no
 fi
 
 # Check whether --enable-alias was given.
@@ -3235,6 +3240,10 @@ if test "${enable_xpg_echo_default+set}" = set; then :
   enableval=$enable_xpg_echo_default; opt_xpg_echo=$enableval
 fi
 
+# Check whether --enable-bash-shell-execve-plugin was given.
+if test "${enable_bash_shell_execve_plugin+set}" = set; then :
+  enableval=$enable_bash_shell_execve_plugin; opt_bash_shell_execve_plugin=$enableval
+fi
 
 # Check whether --enable-mem-scramble was given.
 if test "${enable_mem_scramble+set}" = set; then :
@@ -3254,10 +3263,11 @@ fi
 
 
 
-
-
-
-
+DYNAMICLOAD_LIB=
+if test $opt_bash_shell_execve_plugin = yes; then
+$as_echo "#define BASH_SHELL_EXECVE_PLUGIN 1" >>confdefs.h
+DYNAMICLOAD_LIB=-ldl
+fi
 
 if test $opt_alias = yes; then
 $as_echo "#define ALIAS 1" >>confdefs.h

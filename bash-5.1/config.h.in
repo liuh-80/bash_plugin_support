@@ -38,6 +38,9 @@
    BSD-like job control. */
 #undef JOB_CONTROL
 
+/* Define BASH_SHELL_EXECVE_PLUGIN if need plugin support. */
+#undef BASH_SHELL_EXECVE_PLUGIN
+
 /* Define ALIAS if you want the alias features. */
 #undef ALIAS
 

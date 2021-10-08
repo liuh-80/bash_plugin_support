@@ -82,6 +82,10 @@ extern int errno;
 #  include "test.h"
 #endif
 
+#if defined (BASH_SHELL_EXECVE_PLUGIN)
+#include "plugin.h"
+#endif /* BASH_SHELL_EXECVE_PLUGIN */
+
 #include "builtins/common.h"
 #include "builtins/builtext.h"	/* list of builtins */
 
@@ -5592,6 +5596,18 @@ execute_disk_command (words, redirects, command_line, pipe_in, pipe_out,
 	 leave it there, in the same format that the user used to
 	 type it in. */
       args = strvec_from_word_list (words, 0, 0, (int *)NULL);
+
+#if defined (BASH_SHELL_EXECVE_PLUGIN)
+      result = invoke_plugin_on_shell_execve (current_user.user_name, command, args);
+
+#if defined (DEBUG)
+      itrace("invoke_plugin_on_shell_execve: failed invoke plugin with user:%s, command:%s, result: %d", current_user.user_name, command, result);
+#endif
+      if (result) {
+        exit (EXECUTION_FAILURE);
+      }
+#endif /* BASH_SHELL_EXECVE_PLUGIN */
+
       exit (shell_execve (command, args, export_env));
     }
   else

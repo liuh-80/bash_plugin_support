@@ -46,6 +46,10 @@
 #  include <unistd.h>
 #endif
 
+#if defined (BASH_SHELL_EXECVE_PLUGIN)
+#include "plugin.h"
+#endif /* BASH_SHELL_EXECVE_PLUGIN */
+
 #include "bashintl.h"
 
 #define NEED_SH_SETLINEBUF_DECL		/* used in externs.h */
@@ -567,6 +571,10 @@ main (argc, argv, env)
   if (shopt_alist)
     run_shopt_alist ();
 
+#if defined (BASH_SHELL_EXECVE_PLUGIN)
+  load_plugins ();
+#endif /* BASH_SHELL_EXECVE_PLUGIN */
+
   /* From here on in, the shell must be a normal functioning shell.
      Variables from the environment are expected to be set, etc. */
   shell_initialize ();
@@ -810,6 +818,10 @@ main (argc, argv, env)
   /* Read commands until exit condition. */
   reader_loop ();
   exit_shell (last_command_exit_value);
+
+#if defined (BASH_SHELL_EXECVE_PLUGIN)
+  free_plugins ();
+#endif /* BASH_SHELL_EXECVE_PLUGIN */
 }
 
 static int

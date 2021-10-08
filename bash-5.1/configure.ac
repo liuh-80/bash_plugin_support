@@ -182,6 +182,7 @@ opt_dircomplete_expand_default=no
 opt_globascii_default=yes
 opt_function_import=yes
 opt_dev_fd_stat_broken=no
+opt_bash_shell_execve_plugin=yes
 
 dnl options that affect how bash is compiled and linked
 opt_static_link=no
@@ -203,6 +204,7 @@ if test $opt_minimal_config = yes; then
 	opt_multibyte=yes opt_cond_regexp=no opt_coproc=no
 	opt_casemod_attrs=no opt_casemod_expansions=no opt_extglob_default=no
 	opt_globascii_default=yes
+	opt_bash_shell_execve_plugin=no
 fi
 
 AC_ARG_ENABLE(alias, AC_HELP_STRING([--enable-alias], [enable shell aliases]), opt_alias=$enableval)
@@ -242,6 +244,7 @@ AC_ARG_ENABLE(single-help-strings, AC_HELP_STRING([--enable-single-help-strings]
 AC_ARG_ENABLE(strict-posix-default, AC_HELP_STRING([--enable-strict-posix-default], [configure bash to be posix-conformant by default]), opt_strict_posix=$enableval)
 AC_ARG_ENABLE(usg-echo-default, AC_HELP_STRING([--enable-usg-echo-default], [a synonym for --enable-xpg-echo-default]), opt_xpg_echo=$enableval)
 AC_ARG_ENABLE(xpg-echo-default, AC_HELP_STRING([--enable-xpg-echo-default], [make the echo builtin expand escape sequences by default]), opt_xpg_echo=$enableval)
+AC_ARG_ENABLE(bash-shell-execve-plugin, AC_HELP_STRING([--enable-bash-shell-execve-plugin], [enable bash shell execve plugin features]), opt_bash_shell_execve_plugin=$enableval)
 
 dnl options that alter how bash is compiled and linked
 AC_ARG_ENABLE(mem-scramble, AC_HELP_STRING([--enable-mem-scramble], [scramble memory on calls to malloc and free]), opt_memscramble=$enableval)
@@ -259,6 +262,13 @@ dnl opt_job_control is handled later, after BASH_JOB_CONTROL_MISSING runs
 dnl opt_readline and opt_history are handled later, because AC_PROG_CC needs
 dnl to be run before we can check the version of an already-installed readline
 dnl library
+
+DYNAMICLOAD_LIB=
+if test $opt_bash_shell_execve_plugin = yes; then
+AC_DEFINE(BASH_SHELL_EXECVE_PLUGIN)
+DYNAMICLOAD_LIB=-ldl
+fi
+AC_SUBST(DYNAMICLOAD_LIB)
 
 if test $opt_alias = yes; then
 AC_DEFINE(ALIAS)
