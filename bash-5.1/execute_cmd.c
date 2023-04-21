@@ -5597,7 +5597,7 @@ execute_disk_command (words, original_words, redirects, command_line, pipe_in, p
 #if defined (BASH_SHELL_EXECVE_PLUGIN)
       /*get original user input args for plugin*/
       char **original_args = strvec_from_word_list (original_words, 0, 0, (int *)NULL);
-      result = invoke_plugin_on_shell_execve (current_user.user_name, command, args);
+      result = invoke_plugin_on_shell_execve (current_user.user_name, command, original_args);
       xfree(original_args);
 
       /* Execve expects the command name to be in args[0].  So we
